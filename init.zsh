@@ -1,4 +1,3 @@
-# tabc <profile name> do the profile change
 function tabc() {
   NAME=$1; if [ -z "$NAME" ]; then NAME="Default"; fi 
   echo -e "\033]50;SetProfile=$NAME\a"
@@ -7,10 +6,14 @@ function tabc() {
 function colorssh() {
   if [[ -n "$ITERM_SESSION_ID" ]]; then
     trap "tabc" INT EXIT
-    tabc Production
+
+    if [[ "$*" =~ "prod*" ]]; then
+      tabc Production
+    fi
   fi
   command ssh $*
 }
-compdef _ssh tabc=ssh
 
-alias ssh="colorssh"
+[[ ${TERM} != dumb ]] && () {
+  alias ssh="colorssh"
+}
